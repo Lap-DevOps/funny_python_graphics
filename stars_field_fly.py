@@ -9,7 +9,7 @@ NUM_STARS = 1500
 CENTER = vec2(WIDTH // 2, HEIGHT // 2)
 COLORS = 'red blue green orange purple cyan '.split()
 Z_DISTANCE = 40
-ALPHA = 120
+ALPHA = 30
 
 
 class Star:
@@ -20,6 +20,21 @@ class Star:
         self.color = random.choice(COLORS)
         self.screen_pos = vec2(0, 0)
         self.size = 10
+        self.img = pg.image.load('img/star.png').convert_alpha()
+        self.img = pg.transform.scale(self.img, (20,20))
+        self.new_img = pg.Surface(self.img.get_size(), pg.SRCALPHA)
+        self.fix_new_img()
+
+    def fix_new_img(self):
+        for x in range(self.img.get_width()):
+            for y in range(self.img.get_height()):
+                # Get the color of the pixel
+                color = self.img.get_at((x, y))
+                # Check if the pixel is not transparent
+                if color.a != 0:
+                    # Fill the non-transparent pixel with black color
+                    blend_color = pg.Color.lerp(color, self.color, 0.5)
+                    self.new_img.set_at((x, y), blend_color)
 
     def get_pos3d(self, scale_poz=35):
         angle = random.uniform(0, 2 * math.pi)
@@ -33,6 +48,7 @@ class Star:
         self.pos3d = self.get_pos3d() if self.pos3d.z < 1 else self.pos3d
         self.screen_pos = vec2(self.pos3d.x, self.pos3d.y) / self.pos3d.z + CENTER
         self.size = (Z_DISTANCE - self.pos3d.z) / (0.2 * self.pos3d.z)
+
         # rotate xy
         self.pos3d.xy = self.pos3d.xy.rotate(0.2)
         # mouse
@@ -40,7 +56,8 @@ class Star:
         self.screen_pos += mouse_pos
 
     def draw(self):
-        pg.draw.rect(self.screen, self.color, (*self.screen_pos, self.size, self.size))
+        self.screen.blit(self.new_img, (self.screen_pos))
+        self.screen.blit(self.img, (self.screen_pos))
 
 
 class StarField:
