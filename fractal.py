@@ -1,6 +1,7 @@
 import numpy as np
 import pygame as pg
 import numba
+import taichi as ti
 
 # settings
 RES = WIDTH, HEIGTH = 800, 450
@@ -14,7 +15,7 @@ texture = pg.image.load('img/gradient.jpeg')
 texture_size = min(texture.get_size()) - 1
 texture_array = pg.surfarray.array3d(texture)
 
-
+@ti.data_oriented
 class Fractal:
     def __init__(self, app):
         self.app = app
