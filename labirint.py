@@ -3,7 +3,7 @@ import pygame
 
 # set the size of the screen and the size of each cell
 RES = WIDTH, HEIGHT = 1202, 702
-TILE = 200
+TILE = 50
 
 # calculate the number of rows and columns
 cols, rows = WIDTH // TILE, HEIGHT // TILE
